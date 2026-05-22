@@ -2,6 +2,8 @@
 
 Your ultimate image staging area, right in your browser. Workbar is a powerful Chrome extension that simplifies your creative workflow by providing a dedicated space to stage, organize, and manage images with ease.
 
+**[🌐 Visit the Official Website](https://pheintzelman.github.io/workbar/)**
+
 [![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Workbar-blue?logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/workbar/ehakbbljejpjiibnlkkedlicpkmjjgah)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
