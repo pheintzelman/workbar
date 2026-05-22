@@ -6,6 +6,7 @@ export interface Project {
   name: string;
   parentId: string | null;
   order?: number;
+  active?: boolean;
 }
 
 export interface VirtualFolder {
@@ -15,6 +16,7 @@ export interface VirtualFolder {
   handle: FileSystemDirectoryHandle;
   projectId: string | null;
   order?: number;
+  active?: boolean;
 }
 
 export interface AppLink {

@@ -1,14 +1,16 @@
 {
   "name": "workbar",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "package": "./package-extension.sh"
+    "package": "./package-extension.sh",
+    "website:dev": "npm run dev --prefix website",
+    "website:build": "npm run build --prefix website"
   },
   "dependencies": {
     "react": "^19.2.5",

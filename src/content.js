@@ -2,10 +2,50 @@
 
 const DEBUG_PREFIX = 'Workbar: ';
 
+// State to prevent recursive event loops during spoofing
+let isSpoofing = false;
+
 const handleDragEvents = (e) => {
-  if (e.dataTransfer?.types.includes('application/x-workbar-image')) {
+  if (isSpoofing) return;
+
+  const hasWorkbarImage = e.dataTransfer?.types.includes('application/x-workbar-image');
+  
+  if (hasWorkbarImage) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
+
+    // 1. Spoof "Files" type to wake up standard drag-and-drop UIs (like Google Lens)
+    // We dispatch a secondary event that looks like a real file drag.
+    // We target the window and document as many global overlays listen there.
+    if ((e.type === 'dragenter' || e.type === 'dragover') && !e.dataTransfer.types.includes('Files')) {
+      isSpoofing = true;
+      try {
+        const dt = new DataTransfer();
+        // Add a dummy file to ensure 'Files' is in the types list
+        dt.items.add(new File([], "image.png", { type: "image/png" }));
+        
+        const spoofEvent = new DragEvent(e.type, {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: dt,
+          clientX: e.clientX,
+          clientY: e.clientY,
+          composed: true
+        });
+        
+        // Dispatch to the target to let local listeners react
+        e.target.dispatchEvent(spoofEvent);
+        
+        // Also dispatch to window if we are at the top level to trigger global overlays
+        if (e.target === document.body || e.target === document.documentElement) {
+          window.dispatchEvent(spoofEvent);
+        }
+      } catch (err) {
+        console.error(DEBUG_PREFIX + 'Failed to spoof drag event:', err);
+      } finally {
+        isSpoofing = false;
+      }
+    }
   }
 };
 

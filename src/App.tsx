@@ -81,6 +81,87 @@ function App() {
     } catch { return null; }
   }, []);
 
+  const getItemPath = useCallback((item: Project | VirtualFolder): string => {
+    const pathParts = [item.name];
+    let parentId = 'projectId' in item ? (item as VirtualFolder).projectId : (item as Project).parentId;
+    
+    while (parentId) {
+      const parent = projects.find(p => p.id === parentId);
+      if (parent) {
+        pathParts.unshift(parent.name);
+        parentId = parent.parentId;
+      } else break;
+    }
+    return `/Root/${pathParts.join('/')}`;
+  }, [projects]);
+
+  // Debug/Video commands
+  useEffect(() => {
+    (window as any).workbar = {
+      hide: async (path: string) => {
+        const targetPath = path.startsWith('/Root/') ? path : `/Root/${path}`;
+        const p = projects.find(x => getItemPath(x).toLowerCase() === targetPath.toLowerCase());
+        if (p) {
+          const updated = { ...p, active: false };
+          await saveProject(updated);
+          setProjects(prev => prev.map(x => x.id === p.id ? updated : x));
+          console.log(`Hidden Project: ${targetPath}`);
+          return;
+        }
+        const vf = virtualFolders.find(x => getItemPath(x).toLowerCase() === targetPath.toLowerCase());
+        if (vf) {
+          const updated = { ...vf, active: false };
+          await saveVirtualFolder(updated);
+          setVirtualFolders(prev => prev.map(x => x.id === vf.id ? updated : x));
+          console.log(`Hidden Virtual Folder: ${targetPath}`);
+          return;
+        }
+        console.warn(`Could not find item at path: ${path}`);
+      },
+      show: async (path: string) => {
+        const targetPath = path.startsWith('/Root/') ? path : `/Root/${path}`;
+        const p = projects.find(x => getItemPath(x).toLowerCase() === targetPath.toLowerCase());
+        if (p) {
+          const updated = { ...p, active: true };
+          await saveProject(updated);
+          setProjects(prev => prev.map(x => x.id === p.id ? updated : x));
+          console.log(`Shown Project: ${targetPath}`);
+          return;
+        }
+        const vf = virtualFolders.find(x => getItemPath(x).toLowerCase() === targetPath.toLowerCase());
+        if (vf) {
+          const updated = { ...vf, active: true };
+          await saveVirtualFolder(updated);
+          setVirtualFolders(prev => prev.map(x => x.id === vf.id ? updated : x));
+          console.log(`Shown Virtual Folder: ${targetPath}`);
+          return;
+        }
+        console.warn(`Could not find item at path: ${path}`);
+      },
+      showAll: async () => {
+        const inactiveProjects = projects.filter(p => p.active === false);
+        for (const p of inactiveProjects) {
+          const updated = { ...p, active: true };
+          await saveProject(updated);
+          setProjects(prev => prev.map(x => x.id === p.id ? updated : x));
+        }
+        const inactiveVFs = virtualFolders.filter(vf => vf.active === false);
+        for (const vf of inactiveVFs) {
+          const updated = { ...vf, active: true };
+          await saveVirtualFolder(updated);
+          setVirtualFolders(prev => prev.map(x => x.id === vf.id ? updated : x));
+        }
+        console.log('All items are now active');
+      },
+      listPaths: () => {
+        console.log('Available Paths:');
+        projects.forEach(p => console.log(`[P] ${getItemPath(p)} ${p.active === false ? '(HIDDEN)' : ''}`));
+        virtualFolders.forEach(vf => console.log(`[V] ${getItemPath(vf)} ${vf.active === false ? '(HIDDEN)' : ''}`));
+      }
+    };
+    return () => { delete (window as any).workbar; };
+  }, [projects, virtualFolders, getItemPath]);
+
   const addImage = useCallback(async (url: string, name: string) => {
     let finalUrl = url;
     let mimeType = 'image/png';
@@ -306,13 +387,13 @@ function App() {
 
   // Filtered Content
   const currentSubProjects = projects
-    .filter(p => p.parentId === currentProjectId)
+    .filter(p => p.parentId === currentProjectId && p.active !== false)
     .sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const currentImages = images.filter(img => img.projectId === currentProjectId);
 
   const currentVirtualFolders = virtualFolders
-    .filter(vf => vf.projectId === currentProjectId)
+    .filter(vf => vf.projectId === currentProjectId && vf.active !== false)
     .sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const currentRecentDownloads = recentDownloads.filter(dl => dl.projectId === currentProjectId);
@@ -394,6 +475,27 @@ function App() {
       setRecentDownloads(prev => prev.map(dl => dl.id === d.id ? { ...dl, name: formData.name } : dl));
     }
     closeModal();
+  };
+
+  const handlePasteButtonClick = async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        const imageType = item.types.find(type => type.startsWith('image/'));
+        if (imageType) {
+          const blob = await item.getType(imageType);
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            if (ev.target?.result) {
+              addImage(ev.target.result as string, `pasted-image-${Date.now()}`);
+            }
+          };
+          reader.readAsDataURL(blob);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to read clipboard:', err);
+    }
   };
 
   const removeProject = useCallback((id: string) => {
@@ -656,9 +758,12 @@ function App() {
                   {currentRecentDownloads.map(dl => (
                     <div key={dl.id} className="image-card recent">
                       <img src={dl.url} alt={dl.name} draggable onDragStart={(e) => {
-                        chrome.runtime.sendMessage({ type: 'store-drag-data', dataUrl: dl.url, dragId: `recent-${dl.id}` });
-                        e.dataTransfer.setData('application/x-workbar-image', JSON.stringify({ dragId: `recent-${dl.id}`, name: dl.name, mimeType: dl.mimeType }));
-                        e.dataTransfer.setData('workbar-image-id', `recent-${dl.id}`);
+                        const cacheKey = `recent-${dl.id}`;
+                        chrome.runtime.sendMessage({ type: 'store-drag-data', dataUrl: dl.url, dragId: cacheKey });
+                        e.dataTransfer.setData('application/x-workbar-image', JSON.stringify({ dragId: cacheKey, name: dl.name, mimeType: dl.mimeType }));
+                        e.dataTransfer.setData('text/uri-list', dl.url);
+                        e.dataTransfer.setData('URL', dl.url);
+                        e.dataTransfer.setData('workbar-image-id', cacheKey);
                       }} />
                       <button onClick={() => setRecentDownloads(prev => prev.filter(item => item.id !== dl.id))} className="delete-btn top-right">&times;</button>
                       <button className="rename-btn top-left" onClick={() => openModal('renameDownload', dl)} title="Rename Image"><PenIcon /></button>
@@ -806,6 +911,8 @@ function App() {
                     const cacheKey = `staged-${image.id}`;
                     chrome.runtime.sendMessage({ type: 'store-drag-data', dataUrl: image.url, dragId: cacheKey });
                     e.dataTransfer.setData('application/x-workbar-image', JSON.stringify({ dragId: cacheKey, name: image.name, mimeType: image.mimeType }));
+                    e.dataTransfer.setData('text/uri-list', image.url);
+                    e.dataTransfer.setData('URL', image.url);
                     e.dataTransfer.setData('workbar-move', JSON.stringify({ type: 'image', id: image.id }));
                     e.dataTransfer.setData('workbar-image-id', image.id);
                   }}
@@ -817,6 +924,16 @@ function App() {
                 </div>
               ))}
             </div>
+            {!isAppsMode && (
+              <div className="bottom-actions">
+                <div className="drag-helper">
+                   <span>Drag images anywhere to stage</span>
+                </div>
+                <button className="add-btn paste-btn-large" onClick={handlePasteButtonClick}>
+                   Paste Image from Clipboard
+                </button>
+              </div>
+            )}
           </>
         )}
       </main>
