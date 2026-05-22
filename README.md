@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# Workbar 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Your ultimate image staging area, right in your browser. Workbar is a powerful Chrome extension that simplifies your creative workflow by providing a dedicated space to stage, organize, and manage images with ease.
 
-Currently, two official plugins are available:
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Workbar-blue?logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/workbar/ehakbbljejpjiibnlkkedlicpkmjjgah)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📺 Demo & Screenshots
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Demo Video
+*(Placeholder for demo video - Coming Soon)*
+![Demo Video Placeholder](https://via.placeholder.com/800x450.png?text=Workbar+Demo+Video)
 
-## Expanding the ESLint configuration
+### Screenshots
+| Side Panel View | Project Management | Site Awareness |
+| :---: | :---: | :---: |
+| ![Side Panel](https://via.placeholder.com/250x450.png?text=Side+Panel) | ![Projects](https://via.placeholder.com/250x450.png?text=Projects) | ![Site Awareness](https://via.placeholder.com/250x450.png?text=Site+Awareness) |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## ✨ Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **🖼️ Image Staging Area:** Drag-and-drop or copy-paste images directly into the side panel for quick access.
+- **📁 Project Organization:** Organize your staged images by projects to keep your creative assets structured.
+- **📂 Virtual Folders:** Create virtual folders within projects for even more granular organization.
+- **🔗 App Links:** Quick access to your favorite design and editing apps directly from the Workbar.
+- **🌐 Site Awareness:** Intelligently auto-switches projects based on the active tab or domain you are browsing.
+- **📥 Download Tracking:** Monitor and access your recent image downloads without leaving the side panel.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Installation (Development)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+To run Workbar locally for development:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/workbar.git
+    cd workbar
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Build the extension:**
+    ```bash
+    npm run build
+    ```
+4.  **Load into Chrome:**
+    -   Open Chrome and navigate to `chrome://extensions/`.
+    -   Enable **Developer mode** (toggle in the top-right corner).
+    -   Click **Load unpacked**.
+    -   Select the `workbar/dist` directory.
+
+---
+
+## 🚀 Tech Stack
+
+-   **Frontend:** [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
+-   **Build Tool:** [Vite](https://vitejs.dev/)
+-   **Extension Tooling:** [@crxjs/vite-plugin](https://crxjs.dev/)
+-   **Styling:** CSS
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+*Made with ❤️ by [Your Name]*

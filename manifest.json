@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Workbar",
-  "version": "1.0.0",
-  "description": "Image staging area with drag-and-drop and copy-paste support.",
-  "permissions": ["sidePanel", "storage", "downloads", "activeTab", "tabs"],
+  "name": "Workbar - Image Staging & Drag-and-Drop Organizer",
+  "version": "1.0.1",
+  "description": "Stage, organize, and drag-and-drop images across the web. Eliminate the download-upload loop with a powerful sidebar workspace.",
+  "permissions": ["sidePanel", "storage", "downloads", "activeTab", "tabs", "clipboardRead"],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

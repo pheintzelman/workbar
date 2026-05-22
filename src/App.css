@@ -60,6 +60,47 @@ header h1 {
   cursor: pointer;
 }
 
+.paste-btn-large {
+  background: #10b981;
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
+}
+
+.paste-btn-large:hover {
+  background: #059669;
+}
+
+.bottom-actions {
+  padding: 0 0.5rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.drag-helper {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.drag-helper::before, .drag-helper::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
 .apps-mode-btn {
   background: none;
   border: 1px solid var(--primary-color);
