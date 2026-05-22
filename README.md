@@ -10,13 +10,12 @@ Your ultimate image staging area, right in your browser. Workbar is a powerful C
 ## 📺 Demo & Screenshots
 
 ### Demo Video
-*(Placeholder for demo video - Coming Soon)*
-![Demo Video Placeholder](https://via.placeholder.com/800x450.png?text=Workbar+Demo+Video)
+https://github.com/pheintzelman/workbar/raw/main/website/public/demo-video.mov
 
 ### Screenshots
-| Side Panel View | Project Management | Site Awareness |
+| Side Panel View | Project Management | Virtual Folders |
 | :---: | :---: | :---: |
-| ![Side Panel](https://via.placeholder.com/250x450.png?text=Side+Panel) | ![Projects](https://via.placeholder.com/250x450.png?text=Projects) | ![Site Awareness](https://via.placeholder.com/250x450.png?text=Site+Awareness) |
+| ![Side Panel](website/public/screenshot-1.png) | ![Projects](website/public/screenshot-2.png) | ![Virtual Folders](website/public/screenshot-3.png) |
 
 ---
 
